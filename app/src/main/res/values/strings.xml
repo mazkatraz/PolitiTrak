@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">PolitiTrak</string>
+    <string name="bill_button">Bill Data</string>
+    <string name="members_button">Members of Congress</string>
+    <string name="committee_button">Committee Data</string>
+    <string name="nominations_button">Nomination Data</string>
+    <string name="floor_actions_button">Floor Actions</string>
 </resources>
