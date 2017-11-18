@@ -44,45 +44,6 @@ public class BillMainActivity extends FragmentActivity {
                     }
                 }
         );
-
-
-        //Set the tab listener on the action bar
-        final ActionBar actionBar = getActionBar();
-        if(actionBar != null) {
-            actionBar.setSelectedNavigationItem(ActionBar.NAVIGATION_MODE_TABS);
-
-            ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-                @Override
-                public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-                    viewPager.setCurrentItem(tab.getPosition());
-                }
-
-                @Override
-                public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-                    //Hide the given tab
-                }
-
-                @Override
-                public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-                    //Ignore
-                }
-            };
-
-            //TODO: Make upper limit a variable
-            for(int i = 0; i < 2; i++) {
-                switch (i) {
-                    case 0:
-                        actionBar.newTab()
-                                .setText("Local")
-                                .setTabListener(tabListener);
-                        break;
-                    case 1:
-                        actionBar.newTab()
-                                .setText("National")
-                                .setTabListener(tabListener);
-                }
-            }
-        }
     }
 }
 
@@ -97,7 +58,7 @@ class PagerAdapter extends FragmentPagerAdapter {
      * @param fm The fragment manager
      * @param context The context of the view pager
      */
-    public PagerAdapter(FragmentManager fm, Context context) {
+    PagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
     }
@@ -138,7 +99,7 @@ class PagerAdapter extends FragmentPagerAdapter {
 
     /**
      * The amount of fragments the view pager holds
-     * @return
+     * @return The amount of fragments in view pager
      */
     @Override
     public int getCount() {
