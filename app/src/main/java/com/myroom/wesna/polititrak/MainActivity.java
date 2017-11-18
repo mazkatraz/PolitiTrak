@@ -1,15 +1,18 @@
 package com.myroom.wesna.polititrak;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
 public class MainActivity extends AppCompatActivity {
-    MaterialSearchBar materialSearchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +39,21 @@ public class MainActivity extends AppCompatActivity {
             ));
         }
 
-        materialSearchBar = (MaterialSearchBar) findViewById(R.id.searchBar);
+        //Set up search bar and add the nav button
+        MaterialSearchBar materialSearchBar = (MaterialSearchBar) findViewById(R.id.searchBar);
         materialSearchBar.setNavButtonEnabled(true);
+
+        //Set the click listener for the bill button
+        Button billButton = (Button) findViewById(R.id.bill_button);
+        billButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = MainActivity.this;
+                Class destinationActivity = BillMainActivity.class;
+
+                Intent intent = new Intent(context, destinationActivity);
+                startActivity(intent);
+            }
+        });
     }
 }
