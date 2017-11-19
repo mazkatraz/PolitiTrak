@@ -2,6 +2,8 @@ package com.myroom.wesna.polititrak.utilities;
 
 import android.net.Uri;
 
+import com.myroom.wesna.polititrak.BuildConfig;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -40,7 +42,7 @@ public class NetworkUtils {
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         String xApiKey = "X-API-Key";
-        String apiKey = "abc123";
+        String apiKey = BuildConfig.API_KEY;
 
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.addRequestProperty("x-api-key", apiKey);
