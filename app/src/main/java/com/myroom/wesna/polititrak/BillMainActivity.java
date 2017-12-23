@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mancj.materialsearchbar.MaterialSearchBar;
@@ -19,15 +18,12 @@ import com.myroom.wesna.polititrak.utilities.NetworkUtils;
 import java.io.IOException;
 import java.net.URL;
 
-public class BillMainActivity extends AppCompatActivity {
-    private TextView textView;
+public class BillMainActivity extends AppCompatActivity implements AsyncResponse {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bill_main);
-
-        //textView = (TextView) findViewById(R.id.testTextView);
 
         //Inflate the custom layout for the action bar
         final ViewGroup actionBarLayout = (ViewGroup) getLayoutInflater().inflate(
@@ -62,16 +58,32 @@ public class BillMainActivity extends AppCompatActivity {
         rv.setLayoutManager(lm);
         rv.setHasFixedSize(true);
 
-        //getRecentBills();
+        //Make network call to get recent bills
+        getRecentBills();
     }
 
     private void getRecentBills() {
         URL getRecentBillsURL = NetworkUtils.buildRecentBillsUrl();
-        new GetRecentBillsTask().execute(getRecentBillsURL);
+        new GetRecentBillsTask(this).execute(getRecentBillsURL);
     }
 
-    //TODO: Make this static to prevent leaks
-    public class GetRecentBillsTask extends AsyncTask<URL, Void, String> {
+    @Override
+    public void processFinish(String output) {
+        if(output == null){
+            Toast.makeText(this, "You dun goofed", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Got em", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private static class GetRecentBillsTask extends AsyncTask<URL, Void, String> {
+
+        AsyncResponse delegate = null;
+
+        GetRecentBillsTask(AsyncResponse delegate){
+            this.delegate = delegate;
+        }
 
         @Override
         protected String doInBackground(URL... urls) {
@@ -87,13 +99,7 @@ public class BillMainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String recentBillsResults) {
-            if(recentBillsResults == null) {
-                Toast.makeText(getBaseContext(), "Dun Goofed", Toast.LENGTH_SHORT).show();
-                //TODO: Handle this properly.
-            } else {
-                //textView.setText(recentBillsResults);
-                Toast.makeText(getBaseContext(), "Got em", Toast.LENGTH_SHORT).show();
-            }
+                delegate.processFinish(recentBillsResults);
         }
     }
 }

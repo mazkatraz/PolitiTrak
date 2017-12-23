@@ -41,7 +41,6 @@ public class NetworkUtils {
      * @throws IOException Related to network and stream reading
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
-        String xApiKey = "X-API-Key";
         String apiKey = BuildConfig.API_KEY;
 
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
