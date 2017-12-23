@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mancj.materialsearchbar.MaterialSearchBar;
+import com.myroom.wesna.polititrak.adapters.BillAdapter;
 import com.myroom.wesna.polititrak.utilities.NetworkUtils;
 
 import java.io.IOException;
@@ -24,7 +27,7 @@ public class BillMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bill_main);
 
-        textView = (TextView) findViewById(R.id.testTextView);
+        //textView = (TextView) findViewById(R.id.testTextView);
 
         //Inflate the custom layout for the action bar
         final ViewGroup actionBarLayout = (ViewGroup) getLayoutInflater().inflate(
@@ -50,7 +53,16 @@ public class BillMainActivity extends AppCompatActivity {
         MaterialSearchBar materialSearchBar = (MaterialSearchBar) findViewById(R.id.searchBar);
         materialSearchBar.setNavButtonEnabled(true);
 
-        getRecentBills();
+        //Hook up the adapter and layout manager to the recycler view
+        RecyclerView rv = (RecyclerView) findViewById(R.id.rv_bills);
+        BillAdapter billAdapter = new BillAdapter();
+        RecyclerView.LayoutManager lm = new LinearLayoutManager(this);
+
+        rv.setAdapter(billAdapter);
+        rv.setLayoutManager(lm);
+        rv.setHasFixedSize(true);
+
+        //getRecentBills();
     }
 
     private void getRecentBills() {
@@ -79,7 +91,8 @@ public class BillMainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Dun Goofed", Toast.LENGTH_SHORT).show();
                 //TODO: Handle this properly.
             } else {
-                textView.setText(recentBillsResults);
+                //textView.setText(recentBillsResults);
+                Toast.makeText(getBaseContext(), "Got em", Toast.LENGTH_SHORT).show();
             }
         }
     }
