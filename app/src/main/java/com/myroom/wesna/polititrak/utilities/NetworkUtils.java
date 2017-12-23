@@ -1,6 +1,7 @@
 package com.myroom.wesna.polititrak.utilities;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.myroom.wesna.polititrak.BuildConfig;
 
@@ -12,6 +13,7 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class NetworkUtils {
+    private static final String LOG_TAG = "NETWORK_UTILS";
 
     /**
      * Builds the URL to get the recent bills from the API
@@ -54,11 +56,19 @@ public class NetworkUtils {
 
             boolean hasInput = scanner.hasNext();
             if (hasInput) {
+                Log.d(LOG_TAG, "Scanner has input");
+
                 return scanner.next();
             } else {
+                Log.d(LOG_TAG, "Scanner does not have input");
+
                 return null;
             }
-        } finally {
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+        finally {
             urlConnection.disconnect();
         }
     }
