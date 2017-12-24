@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.myroom.wesna.polititrak.AsyncResponse;
 import com.myroom.wesna.polititrak.R;
+import com.myroom.wesna.polititrak.asynctasks.PolitiTrakAsyncTask;
 import com.myroom.wesna.polititrak.utilities.NetworkUtils;
 
 import org.json.JSONArray;
@@ -28,7 +29,7 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
 
         //Make an async call to get most recent bills from web service
         URL getRecentBillsURL = NetworkUtils.buildRecentBillsUrl();
-        new GetRecentBillsTask(this).execute(getRecentBillsURL);
+        new PolitiTrakAsyncTask(this).execute(getRecentBillsURL);
     }
 
     @Override
@@ -61,7 +62,7 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
             billTitle = "Error at JSON object " + position;
         }
 
-        Log.d(LOG_TAG, "Bill Title at position " + position + ": " + billTitle);
+        //Log.d(LOG_TAG, "Bill Title at position " + position + ": " + billTitle);
 
         //Bind data to the view holder so that data can be displayed to user
         holder.bind(billTitle);
@@ -69,7 +70,6 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
 
     @Override
     public int getItemCount() {
-        Log.d(LOG_TAG, "Bill Recycler View Adapter item count: " + numberOfItems);
         return numberOfItems;
     }
 
@@ -115,34 +115,6 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
 
         void bind(String billTitle){
             billItemTitle.setText(billTitle);
-        }
-    }
-
-    private static class GetRecentBillsTask extends AsyncTask<URL, Void, String> {
-
-        AsyncResponse delegate = null;
-
-        GetRecentBillsTask(AsyncResponse delegate){
-            this.delegate = delegate;
-        }
-
-        @Override
-        protected String doInBackground(URL... urls) {
-            URL recentBillsUrl = urls[0];
-            String recentBillsResults = null;
-
-            try {
-                recentBillsResults = NetworkUtils.getResponseFromHttpUrl(recentBillsUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return recentBillsResults;
-        }
-
-        @Override
-        protected void onPostExecute(String recentBillsResults) {
-            delegate.asyncResponseHandler(recentBillsResults);
         }
     }
 }
