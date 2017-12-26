@@ -1,15 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="16dp">
-    
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="8dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_image"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingRight="20dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_bill_name"
         style="@style/TextAppearance.AppCompat.Button"
-        android:textSize="20sp"/>
+        android:textSize="19sp"
+        app:layout_constraintLeft_toRightOf="@id/profile_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="The bill of Blah Blah Blah"/>
 
-</FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_bill_sponsor"
+        style="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+        android:textSize="19sp"
+        app:layout_constraintLeft_toRightOf="@id/profile_image"
+        app:layout_constraintTop_toBottomOf="@id/tv_bill_name"
+        tools:text="Sen. WhatsIt Tooya"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_bill_intro_date"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:textSize="19sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_bill_sponsor"
+        app:layout_constraintLeft_toRightOf="@id/profile_image"
+        tools:text="12/31/2099"/>
+
+</android.support.constraint.ConstraintLayout>

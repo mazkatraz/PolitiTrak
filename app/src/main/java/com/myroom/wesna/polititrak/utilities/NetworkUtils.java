@@ -21,7 +21,22 @@ public class NetworkUtils {
      */
     public static URL buildRecentBillsUrl() {
         String baseUrl = "https://api.propublica.org/congress/v1/115/both/bills/introduced.json";
+        return buildBasicURL(baseUrl);
+    }
 
+    public static String buildMemberPicUrlString(String size, String bioGuide){
+        if(size == null){
+            size = "original";
+        }
+
+        if(bioGuide == null){
+            return null;
+        }
+
+        return "https://theunitedstates.io/images/congress/" + size + "/" + bioGuide + ".jpg";
+    }
+
+    private static URL buildBasicURL(String baseUrl){
         Uri builtUri = Uri.parse(baseUrl).buildUpon()
                 .build();
 
