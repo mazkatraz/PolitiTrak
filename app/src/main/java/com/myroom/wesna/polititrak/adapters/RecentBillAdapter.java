@@ -1,10 +1,12 @@
 package com.myroom.wesna.polititrak.adapters;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.myroom.wesna.polititrak.AsyncResponse;
@@ -16,6 +18,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.net.URL;
 
@@ -103,18 +106,25 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
     }
 
     class BillItemViewHolder extends RecyclerView.ViewHolder{
-        CircleImageView memberCircleImageView;
+//        ImageView memberCircleImageView;
         TextView billItemTitle;
         TextView billItemSponsor;
-        TextView billItemIntroDate;
+//        TextView billItemIntroDate;
+//        CardView cardView;
+        ImageView profileImageVIew;
+//        TextView infoText;
 
         BillItemViewHolder(View itemView) {
             super(itemView);
 
-            memberCircleImageView = (CircleImageView) itemView.findViewById(R.id.profile_image);
+//            memberCircleImageView = (ImageView) itemView.findViewById(R.id.profile_image);
             billItemTitle = (TextView) itemView.findViewById(R.id.tv_bill_name);
             billItemSponsor = (TextView) itemView.findViewById(R.id.tv_bill_sponsor);
-            billItemIntroDate = (TextView) itemView.findViewById(R.id.tv_bill_intro_date);
+//            billItemIntroDate = (TextView) itemView.findViewById(R.id.tv_bill_intro_date);
+
+//            cardView = (CardView) itemView.findViewById(R.id.card_view);
+            profileImageVIew = (ImageView) itemView.findViewById(R.id.profile_image);
+//            infoText = (TextView) itemView.findViewById(R.id.info_text);
         }
 
         void bind(JSONObject bill){
@@ -125,13 +135,14 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
             try {
                 //Get picture of congress member who sponsored the bill
                 billTitle = bill.getString("short_title");
-                billTitle = billTitle.substring(0, 29) + "...";
+                //billTitle = billTitle.substring(0, 29) + "...";
 
                 //Get picture of congress member who sponsored the bill
                 String sponsorId = bill.getString("sponsor_id");
                 String memberPicUrlString = NetworkUtils.buildMemberPicUrlString("225x275", sponsorId);
 
-                Picasso.with(itemView.getContext()).load(memberPicUrlString).into(memberCircleImageView);
+                //Picasso.with(itemView.getContext()).load(memberPicUrlString).into(memberCircleImageView);
+                Picasso.with(itemView.getContext()).load(memberPicUrlString).into(profileImageVIew);
 
                 //Get sponsor name
                 String sponsorTitle = bill.getString("sponsor_title");
@@ -148,7 +159,9 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
 
             billItemTitle.setText(billTitle);
             billItemSponsor.setText(billSponsor);
-            billItemIntroDate.setText(billIntroDate);
+//            billItemIntroDate.setText(billIntroDate);
+
+//            infoText.setText(billTitle);
         }
     }
 }
