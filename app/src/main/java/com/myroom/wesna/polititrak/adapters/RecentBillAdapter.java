@@ -18,11 +18,8 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.net.URL;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.BillItemViewHolder> implements AsyncResponse{
     private int numberOfItems = 0;
@@ -106,25 +103,17 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
     }
 
     class BillItemViewHolder extends RecyclerView.ViewHolder{
-//        ImageView memberCircleImageView;
         TextView billItemTitle;
         TextView billItemSponsor;
-//        TextView billItemIntroDate;
-//        CardView cardView;
+        TextView billItemIntroDate;
         ImageView profileImageVIew;
-//        TextView infoText;
 
         BillItemViewHolder(View itemView) {
             super(itemView);
-
-//            memberCircleImageView = (ImageView) itemView.findViewById(R.id.profile_image);
             billItemTitle = (TextView) itemView.findViewById(R.id.tv_bill_name);
             billItemSponsor = (TextView) itemView.findViewById(R.id.tv_bill_sponsor);
-//            billItemIntroDate = (TextView) itemView.findViewById(R.id.tv_bill_intro_date);
-
-//            cardView = (CardView) itemView.findViewById(R.id.card_view);
+            billItemIntroDate = (TextView) itemView.findViewById(R.id.tv_bill_intro_date);
             profileImageVIew = (ImageView) itemView.findViewById(R.id.profile_image);
-//            infoText = (TextView) itemView.findViewById(R.id.info_text);
         }
 
         void bind(JSONObject bill){
@@ -159,9 +148,7 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
 
             billItemTitle.setText(billTitle);
             billItemSponsor.setText(billSponsor);
-//            billItemIntroDate.setText(billIntroDate);
-
-//            infoText.setText(billTitle);
+            billItemIntroDate.setText(billIntroDate);
         }
     }
 }

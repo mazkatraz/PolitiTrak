@@ -6,44 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="8dp">
 
-    <!--<de.hdodenhof.circleimageview.CircleImageView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/profile_image"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent"-->
-        <!--android:paddingRight="20dp"/>-->
-
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_bill_name"-->
-        <!--style="@style/TextAppearance.AppCompat.Button"-->
-        <!--android:textSize="19sp"-->
-        <!--app:layout_constraintLeft_toRightOf="@id/profile_image"-->
-        <!--app:layout_constraintTop_toTopOf="parent"-->
-        <!--tools:text="The bill of Blah Blah Blah"/>-->
-
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_bill_sponsor"-->
-        <!--style="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"-->
-        <!--android:textSize="19sp"-->
-        <!--app:layout_constraintLeft_toRightOf="@id/profile_image"-->
-        <!--app:layout_constraintTop_toBottomOf="@id/tv_bill_name"-->
-        <!--tools:text="Sen. WhatsIt Tooya"/>-->
-
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_bill_intro_date"-->
-        <!--style="@style/TextAppearance.AppCompat.Caption"-->
-        <!--android:textSize="19sp"-->
-        <!--app:layout_constraintTop_toBottomOf="@id/tv_bill_sponsor"-->
-        <!--app:layout_constraintLeft_toRightOf="@id/profile_image"-->
-        <!--tools:text="12/31/2099"/>-->
-
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
@@ -58,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <!--TODO: Make this a TextView with the drawableTop attribute-->
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
@@ -94,6 +57,19 @@
             android:layout_toEndOf="@id/pic_name_view"
             style="@style/TextAppearance.AppCompat.Body1"
             tools:text="The bill of Blah Blah Blah"/>
+
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_bill_intro_date"
+            android:textSize="19sp"
+            android:layout_toRightOf="@id/pic_name_view"
+            android:layout_toEndOf="@id/pic_name_view"
+            android:layout_below="@id/tv_bill_name"
+            android:layout_alignParentBottom="true"
+            android:padding="3dp"
+            style="@style/TextAppearance.AppCompat.Caption"
+            tools:text="12/31/2099"/>
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>
