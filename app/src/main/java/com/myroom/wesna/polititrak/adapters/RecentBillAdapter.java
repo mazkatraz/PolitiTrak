@@ -1,6 +1,5 @@
 package com.myroom.wesna.polititrak.adapters;
 
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,13 +11,15 @@ import com.myroom.wesna.polititrak.AsyncResponse;
 import com.myroom.wesna.polititrak.R;
 import com.myroom.wesna.polititrak.asynctasks.PolitiTrakAsyncTask;
 import com.myroom.wesna.polititrak.utilities.NetworkUtils;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.URL;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.BillItemViewHolder> implements AsyncResponse{
     private int numberOfItems = 0;
@@ -27,7 +28,7 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
 
     public RecentBillAdapter(){
 
-        //Make an async call to get most recent bills from web service
+        //Make a web service call to get most recent bills from web service
         URL getRecentBillsURL = NetworkUtils.buildRecentBillsUrl();
         new PolitiTrakAsyncTask(this).execute(getRecentBillsURL);
     }
@@ -48,24 +49,20 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
             //TODO: Error handling
             Log.d(LOG_TAG, "Bills global variable was null entering onBindViewHolder");
         }
+        JSONObject bill = null;
 
-        String billTitle = null;
-
-        //Parse JSON to get bill information at a certain position in the JSON array
         try {
-            JSONObject bill = bills.getJSONObject(position);
-            billTitle = bill.getString("short_title");
-            billTitle = billTitle.substring(0, 29) + "...";
+            //Parse JSON to get bill information at a certain position in the JSON array
+            bill = bills.getJSONObject(position);
+
         } catch (JSONException e) {
             e.printStackTrace();
-
-            billTitle = "Error at JSON object " + position;
         }
 
-        //Log.d(LOG_TAG, "Bill Title at position " + position + ": " + billTitle);
+        if(bill != null){
+            holder.bind(bill);
+        }
 
-        //Bind data to the view holder so that data can be displayed to user
-        holder.bind(billTitle);
     }
 
     @Override
@@ -90,10 +87,11 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
                 //Get the bill JSON array to populate the recycler view
                 JSONObject jsonReader = new JSONObject(asyncOutput);
                 JSONArray results = jsonReader.getJSONArray("results");
+
                 numberOfItems = results.getJSONObject(0).getInt("num_results");
                 bills = results.getJSONObject(0).getJSONArray("bills");
-            } catch (JSONException e) {
 
+            } catch (JSONException e) {
                 //TODO: Display an error message in the UI
 
                 e.printStackTrace();
@@ -105,16 +103,52 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
     }
 
     class BillItemViewHolder extends RecyclerView.ViewHolder{
+        CircleImageView memberCircleImageView;
         TextView billItemTitle;
+        TextView billItemSponsor;
+        TextView billItemIntroDate;
 
         BillItemViewHolder(View itemView) {
             super(itemView);
 
+            memberCircleImageView = (CircleImageView) itemView.findViewById(R.id.profile_image);
             billItemTitle = (TextView) itemView.findViewById(R.id.tv_bill_name);
+            billItemSponsor = (TextView) itemView.findViewById(R.id.tv_bill_sponsor);
+            billItemIntroDate = (TextView) itemView.findViewById(R.id.tv_bill_intro_date);
         }
 
-        void bind(String billTitle){
+        void bind(JSONObject bill){
+            String billTitle = null;
+            String billSponsor = null;
+            String billIntroDate = null;
+
+            try {
+                //Get picture of congress member who sponsored the bill
+                billTitle = bill.getString("short_title");
+                billTitle = billTitle.substring(0, 29) + "...";
+
+                //Get picture of congress member who sponsored the bill
+                String sponsorId = bill.getString("sponsor_id");
+                String memberPicUrlString = NetworkUtils.buildMemberPicUrlString("225x275", sponsorId);
+
+                Picasso.with(itemView.getContext()).load(memberPicUrlString).into(memberCircleImageView);
+
+                //Get sponsor name
+                String sponsorTitle = bill.getString("sponsor_title");
+                String sponsorName = bill.getString("sponsor_name");
+                billSponsor = sponsorTitle + " " + sponsorName;
+
+                //Get bill introduction date
+                billIntroDate = bill.getString("introduced_date");
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             billItemTitle.setText(billTitle);
+            billItemSponsor.setText(billSponsor);
+            billItemIntroDate.setText(billIntroDate);
         }
     }
 }
