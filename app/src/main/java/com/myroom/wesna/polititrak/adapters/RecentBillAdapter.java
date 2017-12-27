@@ -1,6 +1,5 @@
 package com.myroom.wesna.polititrak.adapters;
 
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.myroom.wesna.polititrak.AsyncResponse;
+import com.myroom.wesna.polititrak.BillListItemClickListener;
 import com.myroom.wesna.polititrak.R;
 import com.myroom.wesna.polititrak.asynctasks.PolitiTrakAsyncTask;
 import com.myroom.wesna.polititrak.utilities.NetworkUtils;
@@ -25,8 +25,10 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
     private int numberOfItems = 0;
     private JSONArray bills;
     private static final String LOG_TAG = "BILL_ADAPTER";
+    private BillListItemClickListener billListItemClickListener;
 
-    public RecentBillAdapter(){
+    public RecentBillAdapter(BillListItemClickListener billListItemClickListener){
+        this.billListItemClickListener = billListItemClickListener;
 
         //Make a web service call to get most recent bills from web service
         URL getRecentBillsURL = NetworkUtils.buildRecentBillsUrl();
@@ -40,7 +42,7 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View billListItemView = layoutInflater.inflate(R.layout.bill_list_item, parent,false);
 
-        return new BillItemViewHolder(billListItemView);
+        return new BillItemViewHolder(billListItemView, billListItemClickListener);
     }
 
     @Override
@@ -102,18 +104,25 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
         this.notifyDataSetChanged(); //Update UI
     }
 
-    class BillItemViewHolder extends RecyclerView.ViewHolder{
-        TextView billItemTitle;
-        TextView billItemSponsor;
-        TextView billItemIntroDate;
-        ImageView profileImageVIew;
+    class BillItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private TextView billItemTitle;
+        private TextView billItemSponsor;
+        private TextView billItemIntroDate;
+        private ImageView profileImageVIew;
+        private BillListItemClickListener billListItemClickListener;
+        private String billId;
 
-        BillItemViewHolder(View itemView) {
+
+        BillItemViewHolder(View itemView, BillListItemClickListener billListItemClickListener) {
             super(itemView);
             billItemTitle = (TextView) itemView.findViewById(R.id.tv_bill_name);
             billItemSponsor = (TextView) itemView.findViewById(R.id.tv_bill_sponsor);
             billItemIntroDate = (TextView) itemView.findViewById(R.id.tv_bill_intro_date);
             profileImageVIew = (ImageView) itemView.findViewById(R.id.profile_image);
+
+            this.billListItemClickListener = billListItemClickListener;
+
+            itemView.setOnClickListener(this);
         }
 
         void bind(JSONObject bill){
@@ -122,9 +131,11 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
             String billIntroDate = null;
 
             try {
+                //Get bill id
+                billId = bill.getString("bill_id");
+
                 //Get picture of congress member who sponsored the bill
                 billTitle = bill.getString("short_title");
-                //billTitle = billTitle.substring(0, 29) + "...";
 
                 //Get picture of congress member who sponsored the bill
                 String sponsorId = bill.getString("sponsor_id");
@@ -149,6 +160,12 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
             billItemTitle.setText(billTitle);
             billItemSponsor.setText(billSponsor);
             billItemIntroDate.setText(billIntroDate);
+        }
+
+        @Override
+        public void onClick(View view) {
+            Log.d(LOG_TAG, "onClick called");
+            billListItemClickListener.onBillItemClick(billId);
         }
     }
 }

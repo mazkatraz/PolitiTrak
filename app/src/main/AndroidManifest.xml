@@ -22,6 +22,9 @@
         <activity android:name=".BillMainActivity">
 
         </activity>
+        <activity android:name=".BillInfoActivity">
+
+        </activity>
     </application>
 
 </manifest>
