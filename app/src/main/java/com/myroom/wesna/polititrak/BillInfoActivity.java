@@ -36,6 +36,10 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
     private TextView billTitle;
     private CircleImageView billSponsorImageView;
 
+    private static final int REPUBLICAN_COLOR = Color.RED;
+    private static final int DEMOCRAT_COLOR = Color.BLUE;
+    private static final int INDEPENDENT_COLOR = Color.LTGRAY;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +71,10 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleColor(getResources().getColor(R.color.colorPrimary));
 
-        pieChart.setDrawCenterText(true);
-        pieChart.setCenterText("Co-sponsors");
+//        pieChart.setDrawCenterText(true);
+//        pieChart.setCenterText("Sponsors");
+
+        pieChart.getLegend().setEnabled(false);
     }
 
     private void initializePieChart(float republicanAmt, float democratAmt, float independentAmt){
@@ -98,9 +104,9 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
 
         //Get colors
         ArrayList<Integer> colors = new ArrayList<Integer>();
-        colors.add(Color.RED);
-        colors.add(Color.BLUE);
-        colors.add(Color.LTGRAY);
+        colors.add(REPUBLICAN_COLOR);
+        colors.add(DEMOCRAT_COLOR);
+        colors.add(INDEPENDENT_COLOR);
 
         //Set colors to data set
         pieDataSet.setColors(colors);
@@ -155,6 +161,23 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
                         //Nope
                     }
                 }
+            }
+
+            //Count the main sponsor to the party too. And set their photo border to their pary color
+            String sponsorParty = bill.getString("sponsor_party");
+            switch (sponsorParty){
+                case "R":
+                    republicanAmt++;
+                    billSponsorImageView.setBorderColor(REPUBLICAN_COLOR);
+                    break;
+                case "D":
+                    democratAmt++;
+                    billSponsorImageView.setBorderColor(DEMOCRAT_COLOR);
+                    break;
+                case "I":
+                    independentAmt++;
+                    billSponsorImageView.setBorderColor(INDEPENDENT_COLOR);
+                    break;
             }
 
         } catch (JSONException e) {
