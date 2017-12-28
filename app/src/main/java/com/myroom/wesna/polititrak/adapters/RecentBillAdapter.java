@@ -74,20 +74,20 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
 
     /**
      * Handler for the data that comes from the Async call to the web service.
-     * @param asyncOutput The output from the web service call to get most recent bills
+     * @param result The output from the web service call to get most recent bills
      */
     @Override
-    public void asyncResponseHandler(String asyncOutput) {
+    public void asyncResponseHandler(String result) {
         JSONArray bills = null;
 
-        if(asyncOutput == null){
+        if(result == null){
             //TODO: Display an error message in the UI
             Log.d(LOG_TAG, "Async output was null");
         } else {
 
             try {
                 //Get the bill JSON array to populate the recycler view
-                JSONObject jsonReader = new JSONObject(asyncOutput);
+                JSONObject jsonReader = new JSONObject(result);
                 JSONArray results = jsonReader.getJSONArray("results");
 
                 numberOfItems = results.getJSONObject(0).getInt("num_results");
@@ -110,7 +110,8 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
         private TextView billItemIntroDate;
         private ImageView profileImageVIew;
         private BillListItemClickListener billListItemClickListener;
-        private String billId;
+        private String billSlug;
+        private String sponsorId;
 
 
         BillItemViewHolder(View itemView, BillListItemClickListener billListItemClickListener) {
@@ -132,13 +133,13 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
 
             try {
                 //Get bill id
-                billId = bill.getString("bill_id");
+                billSlug = bill.getString("bill_slug");
 
                 //Get picture of congress member who sponsored the bill
                 billTitle = bill.getString("short_title");
 
                 //Get picture of congress member who sponsored the bill
-                String sponsorId = bill.getString("sponsor_id");
+                sponsorId = bill.getString("sponsor_id");
                 String memberPicUrlString = NetworkUtils.buildMemberPicUrlString("225x275", sponsorId);
 
                 //Picasso.with(itemView.getContext()).load(memberPicUrlString).into(memberCircleImageView);
@@ -164,8 +165,7 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
 
         @Override
         public void onClick(View view) {
-            Log.d(LOG_TAG, "onClick called");
-            billListItemClickListener.onBillItemClick(billId);
+            billListItemClickListener.onBillItemClick(billSlug, sponsorId);
         }
     }
 }

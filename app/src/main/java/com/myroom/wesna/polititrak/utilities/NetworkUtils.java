@@ -20,10 +20,26 @@ public class NetworkUtils {
      * @return A URL to the get-recent-bills API call
      */
     public static URL buildRecentBillsUrl() {
-        String baseUrl = "https://api.propublica.org/congress/v1/115/both/bills/introduced.json";
-        return buildBasicURL(baseUrl);
+        String url = "https://api.propublica.org/congress/v1/115/both/bills/introduced.json";
+        return buildBasicURL(url);
     }
 
+    /**
+     * Builds the URL to get the specific bill from the API
+     * @param billId The bill id of the bill
+     * @return A URL of the specific bill
+     */
+    public static URL buildSpecificBillUrl(String billId){
+        String url = "https://api.propublica.org/congress/v1/115/bills/" + billId + ".json";
+        return buildBasicURL(url);
+    }
+
+    /**
+     * Builds the URL to get a specific member's photo
+     * @param size Size of the photo
+     * @param bioGuide Member's Id
+     * @return A URL of member's photo
+     */
     public static String buildMemberPicUrlString(String size, String bioGuide){
         if(size == null){
             size = "original";

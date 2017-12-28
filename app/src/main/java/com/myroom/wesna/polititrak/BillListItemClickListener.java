@@ -1,5 +1,5 @@
 package com.myroom.wesna.polititrak;
 
 public interface BillListItemClickListener {
-    void onBillItemClick(String billId);
+    void onBillItemClick(String billId, String sponsorId);
 }

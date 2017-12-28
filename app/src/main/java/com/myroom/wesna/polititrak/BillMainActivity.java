@@ -15,7 +15,8 @@ import com.myroom.wesna.polititrak.adapters.RecentBillAdapter;
 
 public class BillMainActivity extends AppCompatActivity implements BillListItemClickListener {
     private static final String LOG_TAG = "BILL_MAIN_ACTIVITY";
-    public static final String EXTRA_BILL_ID  = "com.myroom.wesna.polititrak.BILL_ID";
+    public static final String EXTRA_BILL_SLUG  = "com.myroom.wesna.polititrak.BILL_SLUG";
+    public static final String EXTRA_SPONSOR_ID  = "com.myroom.wesna.polititrak.SPONSOR_ID";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,10 +58,11 @@ public class BillMainActivity extends AppCompatActivity implements BillListItemC
     }
 
     @Override
-    public void onBillItemClick(String billId) {
+    public void onBillItemClick(String billSlug, String sponsorId) {
 
         Intent intent = new Intent(this, BillInfoActivity.class);
-        intent.putExtra(EXTRA_BILL_ID, billId);
+        intent.putExtra(EXTRA_BILL_SLUG, billSlug);
+        intent.putExtra(EXTRA_SPONSOR_ID, sponsorId);
 
         startActivity(intent);
     }
