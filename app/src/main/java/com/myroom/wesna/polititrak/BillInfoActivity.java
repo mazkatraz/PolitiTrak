@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -15,6 +20,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.MPPointF;
+import com.myroom.wesna.polititrak.adapters.BillTimelineAdpater;
 import com.myroom.wesna.polititrak.asynctasks.PolitiTrakAsyncTask;
 import com.myroom.wesna.polititrak.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -35,6 +41,7 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
     private PieChart pieChart;
     private TextView billTitle;
     private CircleImageView billSponsorImageView;
+    private RecyclerView billTimelineRecyclerView;
 
     private static final int REPUBLICAN_COLOR = Color.RED;
     private static final int DEMOCRAT_COLOR = Color.BLUE;
@@ -61,6 +68,7 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
 
         billTitle = (TextView) findViewById(R.id.tv_bill_title);
 
+        //Initialize and format pie chart
         pieChart = (PieChart) findViewById(R.id.pie_chart_cosponsors);
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
@@ -71,26 +79,27 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleColor(getResources().getColor(R.color.colorPrimary));
 
-//        pieChart.setDrawCenterText(true);
-//        pieChart.setCenterText("Sponsors");
-
         pieChart.getLegend().setEnabled(false);
     }
 
-    private void initializePieChart(float republicanAmt, float democratAmt, float independentAmt){
+    private void initializePieChart(float republicanAmt, float democratAmt, float independentAmt, int amtCosponsors){
         Log.d(LOG_TAG, republicanAmt + " " + democratAmt + " " + independentAmt);
 
-        //Enter pie entry values
+        //Enter pie entry values and get colors
         ArrayList<PieEntry> pieEntries = new ArrayList<PieEntry>();
+        ArrayList<Integer> colors = new ArrayList<Integer>();
         int i = 0;
         if(republicanAmt != 0){
             pieEntries.add(i++, new PieEntry(republicanAmt, "Republican"));
+            colors.add(REPUBLICAN_COLOR);
         }
         if(democratAmt != 0){
             pieEntries.add(i++, new PieEntry(democratAmt, "Democrat"));
+            colors.add(DEMOCRAT_COLOR);
         }
         if(independentAmt != 0){
             pieEntries.add(i++, new PieEntry(independentAmt, "Independent"));
+            colors.add(INDEPENDENT_COLOR);
         }
 
         //Construct pie data set
@@ -102,39 +111,50 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
         pieDataSet.setIconsOffset(new MPPointF(0, 40));
         pieDataSet.setSelectionShift(5f);
 
-        //Get colors
-        ArrayList<Integer> colors = new ArrayList<Integer>();
-        colors.add(REPUBLICAN_COLOR);
-        colors.add(DEMOCRAT_COLOR);
-        colors.add(INDEPENDENT_COLOR);
-
         //Set colors to data set
         pieDataSet.setColors(colors);
 
         //Set data to chart
         PieData pieData = new PieData(pieDataSet);
         pieChart.setData(pieData);
-
         pieChart.invalidate();
 
+        //Set pie chart title
+        SpannableString s = new SpannableString("Co-sponsors\n(" + amtCosponsors + ")");
+        s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, s.length(), Spanned.SPAN_COMPOSING);
+        pieChart.setCenterText(s);
+
+        //Start animation
         pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
+
+        //Initialize recycler view
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        billTimelineRecyclerView = (RecyclerView) findViewById(R.id.rv_timeline);
+        billTimelineRecyclerView.setLayoutManager(linearLayoutManager);
+        billTimelineRecyclerView.setHasFixedSize(true);
     }
 
     @Override
     public void asyncResponseHandler(String result) {
+        JSONObject bill = null;
         String billTitleString = null;
         int republicanAmt = 0;
         int democratAmt = 0;
         int independentAmt = 0;
+        int amtCosponsors = 0;
 
         try {
             //Get bill JSON object
             JSONObject jsonReader = new JSONObject(result);
             JSONArray resultsArray = jsonReader.getJSONArray("results");
-            JSONObject bill = resultsArray.getJSONObject(0);
+            bill = resultsArray.getJSONObject(0);
 
             //Get bill title
             billTitleString = bill.getString("title");
+
+            //Get amount of co-sponsors
+            amtCosponsors = bill.getInt("cosponsors");
 
             //Co-sponsor party amounts
             JSONObject cosponsorAmtObj = bill.getJSONObject("cosponsors_by_party");
@@ -167,15 +187,15 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
             String sponsorParty = bill.getString("sponsor_party");
             switch (sponsorParty){
                 case "R":
-                    republicanAmt++;
+                    //republicanAmt++;
                     billSponsorImageView.setBorderColor(REPUBLICAN_COLOR);
                     break;
                 case "D":
-                    democratAmt++;
+                    //democratAmt++;
                     billSponsorImageView.setBorderColor(DEMOCRAT_COLOR);
                     break;
                 case "I":
-                    independentAmt++;
+                    //independentAmt++;
                     billSponsorImageView.setBorderColor(INDEPENDENT_COLOR);
                     break;
             }
@@ -184,7 +204,13 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
             e.printStackTrace();
         }
 
+        //Set bill title
         billTitle.setText(billTitleString);
-        initializePieChart(republicanAmt, democratAmt, independentAmt);
+
+        //Initialize pie chart with data from JSON
+        initializePieChart(republicanAmt, democratAmt, independentAmt, amtCosponsors);
+
+        //Put data in recycler view
+        billTimelineRecyclerView.setAdapter(new BillTimelineAdpater(bill));
     }
 }
