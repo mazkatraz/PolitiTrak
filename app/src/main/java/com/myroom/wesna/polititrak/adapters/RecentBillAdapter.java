@@ -1,13 +1,16 @@
 package com.myroom.wesna.polititrak.adapters;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.myroom.wesna.polititrak.AsyncResponse;
+import com.myroom.wesna.polititrak.BillListItemClickListener;
 import com.myroom.wesna.polititrak.R;
 import com.myroom.wesna.polititrak.asynctasks.PolitiTrakAsyncTask;
 import com.myroom.wesna.polititrak.utilities.NetworkUtils;
@@ -19,14 +22,14 @@ import org.json.JSONObject;
 
 import java.net.URL;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.BillItemViewHolder> implements AsyncResponse{
     private int numberOfItems = 0;
     private JSONArray bills;
     private static final String LOG_TAG = "BILL_ADAPTER";
+    private BillListItemClickListener billListItemClickListener;
 
-    public RecentBillAdapter(){
+    public RecentBillAdapter(BillListItemClickListener billListItemClickListener){
+        this.billListItemClickListener = billListItemClickListener;
 
         //Make a web service call to get most recent bills from web service
         URL getRecentBillsURL = NetworkUtils.buildRecentBillsUrl();
@@ -40,7 +43,7 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View billListItemView = layoutInflater.inflate(R.layout.bill_list_item, parent,false);
 
-        return new BillItemViewHolder(billListItemView);
+        return new BillItemViewHolder(billListItemView, billListItemClickListener);
     }
 
     @Override
@@ -72,20 +75,20 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
 
     /**
      * Handler for the data that comes from the Async call to the web service.
-     * @param asyncOutput The output from the web service call to get most recent bills
+     * @param result The output from the web service call to get most recent bills
      */
     @Override
-    public void asyncResponseHandler(String asyncOutput) {
+    public void asyncResponseHandler(String result) {
         JSONArray bills = null;
 
-        if(asyncOutput == null){
+        if(result == null){
             //TODO: Display an error message in the UI
             Log.d(LOG_TAG, "Async output was null");
         } else {
 
             try {
                 //Get the bill JSON array to populate the recycler view
-                JSONObject jsonReader = new JSONObject(asyncOutput);
+                JSONObject jsonReader = new JSONObject(result);
                 JSONArray results = jsonReader.getJSONArray("results");
 
                 numberOfItems = results.getJSONObject(0).getInt("num_results");
@@ -102,19 +105,26 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
         this.notifyDataSetChanged(); //Update UI
     }
 
-    class BillItemViewHolder extends RecyclerView.ViewHolder{
-        CircleImageView memberCircleImageView;
-        TextView billItemTitle;
-        TextView billItemSponsor;
-        TextView billItemIntroDate;
+    class BillItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private TextView billItemTitle;
+        private TextView billItemSponsor;
+        private TextView billItemIntroDate;
+        private ImageView profileImageVIew;
+        private BillListItemClickListener billListItemClickListener;
+        private String billSlug;
+        private String sponsorId;
 
-        BillItemViewHolder(View itemView) {
+
+        BillItemViewHolder(View itemView, BillListItemClickListener billListItemClickListener) {
             super(itemView);
-
-            memberCircleImageView = (CircleImageView) itemView.findViewById(R.id.profile_image);
             billItemTitle = (TextView) itemView.findViewById(R.id.tv_bill_name);
             billItemSponsor = (TextView) itemView.findViewById(R.id.tv_bill_sponsor);
             billItemIntroDate = (TextView) itemView.findViewById(R.id.tv_bill_intro_date);
+            profileImageVIew = (ImageView) itemView.findViewById(R.id.profile_image);
+
+            this.billListItemClickListener = billListItemClickListener;
+
+            itemView.setOnClickListener(this);
         }
 
         void bind(JSONObject bill){
@@ -123,15 +133,18 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
             String billIntroDate = null;
 
             try {
+                //Get bill id
+                billSlug = bill.getString("bill_slug");
+
                 //Get picture of congress member who sponsored the bill
                 billTitle = bill.getString("short_title");
-                billTitle = billTitle.substring(0, 29) + "...";
 
                 //Get picture of congress member who sponsored the bill
-                String sponsorId = bill.getString("sponsor_id");
+                sponsorId = bill.getString("sponsor_id");
                 String memberPicUrlString = NetworkUtils.buildMemberPicUrlString("225x275", sponsorId);
 
-                Picasso.with(itemView.getContext()).load(memberPicUrlString).into(memberCircleImageView);
+                //Picasso.with(itemView.getContext()).load(memberPicUrlString).into(memberCircleImageView);
+                Picasso.with(itemView.getContext()).load(memberPicUrlString).into(profileImageVIew);
 
                 //Get sponsor name
                 String sponsorTitle = bill.getString("sponsor_title");
@@ -149,6 +162,11 @@ public class RecentBillAdapter extends RecyclerView.Adapter<RecentBillAdapter.Bi
             billItemTitle.setText(billTitle);
             billItemSponsor.setText(billSponsor);
             billItemIntroDate.setText(billIntroDate);
+        }
+
+        @Override
+        public void onClick(View view) {
+            billListItemClickListener.onBillItemClick(billSlug, sponsorId);
         }
     }
 }

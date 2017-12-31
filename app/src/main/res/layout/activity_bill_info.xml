@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="3"
+        android:orientation="vertical">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:id="@+id/top_view"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_member_name"
+                    android:textColor="@color/colorPrimaryLight"
+                    android:gravity="bottom"
+                    android:layout_alignParentBottom="true"
+                    android:text="I am text. Hear me type."/>
+
+                <ScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_above="@id/tv_member_name"
+                    android:id="@+id/sc_bill_title"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:paddingLeft="1dp"
+                    android:paddingRight="1dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_bill_title"
+                        android:textSize="15dp"
+                        android:textColor="@color/cardview_light_background"
+                        style="@style/TextAppearance.AppCompat.Caption"/>
+
+                </ScrollView>
+
+            </RelativeLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/pie_chart_cosponsors">
+
+                </com.github.mikephil.charting.charts.PieChart>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:id="@+id/rv_timeline">
+
+        </android.support.v7.widget.RecyclerView>
+        
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:civ_border_width="3dp"
+        app:civ_border_color="@color/cardview_light_background"
+        app:layout_anchor="@id/top_view"
+        app:layout_anchorGravity="bottom|center"
+        android:id="@+id/bill_sponsor_image_view"/>
+
+</android.support.design.widget.CoordinatorLayout>
