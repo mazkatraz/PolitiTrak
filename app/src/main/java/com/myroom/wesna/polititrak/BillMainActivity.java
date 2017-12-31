@@ -1,5 +1,6 @@
 package com.myroom.wesna.polititrak;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,8 +13,10 @@ import android.view.ViewGroup;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.myroom.wesna.polititrak.adapters.RecentBillAdapter;
 
-public class BillMainActivity extends AppCompatActivity /*implements AsyncResponse*/ {
+public class BillMainActivity extends AppCompatActivity implements BillListItemClickListener {
     private static final String LOG_TAG = "BILL_MAIN_ACTIVITY";
+    public static final String EXTRA_BILL_SLUG  = "com.myroom.wesna.polititrak.BILL_SLUG";
+    public static final String EXTRA_SPONSOR_ID  = "com.myroom.wesna.polititrak.SPONSOR_ID";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,11 +49,21 @@ public class BillMainActivity extends AppCompatActivity /*implements AsyncRespon
 
         //Hook up the adapter and layout manager to the recycler view
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv_bills);
-        RecentBillAdapter recentBillAdapter = new RecentBillAdapter();
+        RecentBillAdapter recentBillAdapter = new RecentBillAdapter(this);
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this);
 
         rv.setAdapter(recentBillAdapter);
         rv.setLayoutManager(lm);
         rv.setHasFixedSize(true);
+    }
+
+    @Override
+    public void onBillItemClick(String billSlug, String sponsorId) {
+
+        Intent intent = new Intent(this, BillInfoActivity.class);
+        intent.putExtra(EXTRA_BILL_SLUG, billSlug);
+        intent.putExtra(EXTRA_SPONSOR_ID, sponsorId);
+
+        startActivity(intent);
     }
 }
