@@ -18,19 +18,44 @@
             android:id="@+id/top_view"
             android:orientation="horizontal">
 
-            <FrameLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:padding="8dp">
+                android:padding="8dp"
+                android:weightSum="1">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/tv_bill_title"
-                    android:textColor="@color/cardview_light_background"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_member_name"
+                    android:textColor="@color/colorPrimaryLight"
+                    android:gravity="bottom"
+                    android:layout_alignParentBottom="true"
+                    android:text="I am text. Hear me type."/>
 
-            </FrameLayout>
+                <ScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_above="@id/tv_member_name"
+                    android:id="@+id/sc_bill_title"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:paddingLeft="1dp"
+                    android:paddingRight="1dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_bill_title"
+                        android:textSize="15dp"
+                        android:textColor="@color/cardview_light_background"
+                        style="@style/TextAppearance.AppCompat.Caption"/>
+
+                </ScrollView>
+
+            </RelativeLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"

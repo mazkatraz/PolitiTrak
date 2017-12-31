@@ -3,7 +3,6 @@ package com.myroom.wesna.polititrak;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,6 +39,7 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
     private static final String LOG_TAG = "BILL_INFO_ACTIVITY";
     private PieChart pieChart;
     private TextView billTitle;
+    private TextView billSponsorName;
     private CircleImageView billSponsorImageView;
     private RecyclerView billTimelineRecyclerView;
 
@@ -66,7 +66,9 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
         String memberPicUrlString = NetworkUtils.buildMemberPicUrlString("225x275", bioGuide);
         Picasso.with(this).load(memberPicUrlString).into(billSponsorImageView);
 
+        //Initialize bill title and bill sponsor name TextView
         billTitle = (TextView) findViewById(R.id.tv_bill_title);
+        billSponsorName = (TextView) findViewById(R.id.tv_member_name);
 
         //Initialize and format pie chart
         pieChart = (PieChart) findViewById(R.id.pie_chart_cosponsors);
@@ -139,6 +141,8 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
     public void asyncResponseHandler(String result) {
         JSONObject bill = null;
         String billTitleString = null;
+        String sponsorTitle = null;
+        String sponsorName = null;
         int republicanAmt = 0;
         int democratAmt = 0;
         int independentAmt = 0;
@@ -152,6 +156,10 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
 
             //Get bill title
             billTitleString = bill.getString("title");
+
+            //Get bill sponsor title and name
+            sponsorTitle = bill.getString("sponsor_title");
+            sponsorName = bill.getString("sponsor");
 
             //Get amount of co-sponsors
             amtCosponsors = bill.getInt("cosponsors");
@@ -206,6 +214,9 @@ public class BillInfoActivity extends AppCompatActivity implements AsyncResponse
 
         //Set bill title
         billTitle.setText(billTitleString);
+
+        //Set bill title name
+        billSponsorName.setText(sponsorTitle + " " + sponsorName);
 
         //Initialize pie chart with data from JSON
         initializePieChart(republicanAmt, democratAmt, independentAmt, amtCosponsors);
